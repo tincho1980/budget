@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  maintenance_contract: one
+  period: MyString
+  amount: 9.99
+  due_on: 2026-09-16
+  status: 1
+
+two:
+  maintenance_contract: two
+  period: MyString
+  amount: 9.99
+  due_on: 2026-09-16
+  status: 1

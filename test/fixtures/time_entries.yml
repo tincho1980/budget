@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  budget_item: one
+  user: one
+  worked_on: 2026-09-16
+  hours: 9.99
+  description: MyString
+
+two:
+  budget_item: two
+  user: two
+  worked_on: 2026-09-16
+  hours: 9.99
+  description: MyString

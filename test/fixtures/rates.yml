@@ -1,0 +1,11 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  level: 1
+  hourly_value: 9.99
+  valid_from: 2026-09-16
+
+two:
+  level: 1
+  hourly_value: 9.99
+  valid_from: 2026-09-16

@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  project: one
+  version: 1
+  status: 1
+  buffer_percentage: 9.99
+  total: 9.99
+  sent_at: 2026-09-16 21:50:11
+  approved_at: 2026-09-16 21:50:11
+  notes: MyText
+
+two:
+  project: two
+  version: 1
+  status: 1
+  buffer_percentage: 9.99
+  total: 9.99
+  sent_at: 2026-09-16 21:50:11
+  approved_at: 2026-09-16 21:50:11
+  notes: MyText
