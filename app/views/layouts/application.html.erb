@@ -24,7 +24,17 @@
   </head>
 
   <body>
-    <main class="container mx-auto mt-28 px-5 flex">
+    <% if authenticated? %>
+      <header class="container mx-auto px-5 py-4 flex justify-between border-b">
+        <%= link_to "Adavra Sales", root_path, class: "font-bold" %>
+        <div>
+          <%= Current.user.name %> ·
+          <%= button_to "Cerrar sesión", session_path, method: :delete, form: { class: "inline" }, class: "underline cursor-pointer" %>
+        </div>
+      </header>
+    <% end %>
+
+    <main class="container mx-auto px-5 py-8">
       <%= yield %>
     </main>
   </body>

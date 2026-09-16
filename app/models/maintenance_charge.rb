@@ -9,4 +9,17 @@ class MaintenanceCharge < ApplicationRecord
     uniqueness: { scope: :maintenance_contract_id }
   validates :amount, numericality: { greater_than: 0 }
   validates :due_on, presence: true
+
+  # Summed in Ruby so preloaded applications don't trigger one query per charge.
+  def paid_amount
+    payment_applications.sum(&:applied_amount)
+  end
+
+  def balance
+    amount - paid_amount
+  end
+
+  def days_overdue
+    [ (Date.current - due_on).to_i, 0 ].max
+  end
 end
