@@ -6,6 +6,8 @@ module SeniorityLevel
   LEVELS = { junior: 0, semi: 1, senior: 2 }.freeze
 
   included do
-    enum :level, LEVELS
+    # Portal users have no seniority, so nil is allowed here and
+    # models that require a level validate its presence themselves.
+    enum :level, LEVELS, validate: { allow_nil: true }
   end
 end
