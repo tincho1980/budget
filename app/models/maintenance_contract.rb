@@ -1,4 +1,5 @@
 class MaintenanceContract < ApplicationRecord
   belongs_to :client
-  belongs_to :project
+  belongs_to :project, optional: true
+  has_many :maintenance_charges, dependent: :restrict_with_error
 end
