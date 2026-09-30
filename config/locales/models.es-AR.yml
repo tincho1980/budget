@@ -1,0 +1,100 @@
+es-AR:
+  activerecord:
+    models:
+      client: Cliente
+      project: Proyecto
+      budget: Presupuesto
+      budget_item: Ítem
+      rate: Tarifa
+      time_entry: Registro de horas
+      user: Usuario
+      maintenance_contract: Contrato
+      maintenance_charge: Cuota
+      payment: Pago
+      payment_application: Imputación
+    attributes:
+      client:
+        business_name: Razón social
+        contact_name: Contacto
+        email: Email
+        tax_id: CUIT
+        phone: Teléfono
+        active: Activo
+        projects: Proyectos
+        payments: Pagos
+        users: Usuarios
+        maintenance_contracts: Contratos
+      project:
+        client: Cliente
+        name: Nombre
+        description: Descripción
+        status: Estado
+        started_on: Fecha de inicio
+        closed_on: Fecha de cierre
+        budgets: Presupuestos
+      budget:
+        project: Proyecto
+        version: Versión
+        status: Estado
+        buffer_percentage: Buffer (%)
+        total: Total
+        notes: Notas
+      budget_item:
+        budget: Presupuesto
+        rate: Tarifa
+        module_name: Módulo
+        description: Descripción
+        estimated_hours: Horas estimadas
+        level: Nivel
+        billable: Facturable
+        position: Orden
+        time_entries: Horas registradas
+      rate:
+        level: Nivel
+        hourly_value: Valor hora
+        valid_from: Vigente desde
+        budget_items: Ítems
+      time_entry:
+        budget_item: Ítem
+        user: Usuario
+        worked_on: Fecha
+        hours: Horas
+        description: Descripción
+      user:
+        name: Nombre
+        email_address: Email
+        password: Contraseña
+        password_confirmation: Confirmación de contraseña
+        role: Rol
+        level: Nivel
+        client: Cliente
+        time_entries: Horas registradas
+        registered_payments: Pagos registrados
+      maintenance_contract:
+        client: Cliente
+        project: Proyecto
+        monthly_amount: Monto mensual
+        due_day: Día de vencimiento
+        starts_on: Fecha de alta
+        ends_on: Fecha de baja
+        status: Estado
+        maintenance_charges: Cuotas
+      maintenance_charge:
+        maintenance_contract: Contrato
+        period: Período
+        amount: Monto
+        due_on: Vencimiento
+        status: Estado
+        payment_applications: Imputaciones
+      payment:
+        client: Cliente
+        registered_by: Registrado por
+        paid_on: Fecha de pago
+        amount: Monto
+        payment_method: Medio de pago
+        status: Estado
+        notes: Notas
+      payment_application:
+        payment: Pago
+        maintenance_charge: Cuota
+        applied_amount: Monto imputado
