@@ -1,0 +1,591 @@
+{
+  "info": {
+    "_postman_id": "63cb1d9b-f4f2-4e55-93ff-468064b31635",
+    "name": "adavra-sales API v1",
+    "description": "Portal del cliente. Correr primero 'Login' (guarda el token) y 'Mis proyectos' (guarda project_id y budget_id). Credenciales de los seeds: contraseña 'password'.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000/api/v1"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "project_id",
+      "value": ""
+    },
+    {
+      "key": "budget_id",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Sesión",
+      "item": [
+        {
+          "name": "Login · Club Social (presupuesto para aprobar)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email_address\": \"portal@clubsocial.com.ar\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            },
+            "description": "Devuelve el token. El script lo guarda en la variable {{token}}."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.test(\"Login correcto\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"token\", body.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login · Ferretería (cliente moroso)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email_address\": \"portal@ferreteriael.com.ar\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.test(\"Login correcto\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"token\", body.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login · Estudio Contable (pago parcial)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "login"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email_address\": \"portal@estudiocontable.com.ar\",\n  \"password\": \"password\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const body = pm.response.json();",
+                  "pm.test(\"Login correcto\", () => pm.response.to.have.status(201));",
+                  "pm.collectionVariables.set(\"token\", body.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "logout"
+              ]
+            },
+            "description": "Rota el token: el anterior deja de funcionar."
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Proyectos y presupuestos",
+      "item": [
+        {
+          "name": "Mis proyectos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/projects",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const projects = pm.response.json().projects;",
+                  "pm.test(\"Lista de proyectos\", () => pm.response.to.have.status(200));",
+                  "if (projects.length) {",
+                  "  pm.collectionVariables.set(\"project_id\", projects[0].id);",
+                  "  if (projects[0].current_budget) pm.collectionVariables.set(\"budget_id\", projects[0].current_budget.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Detalle del proyecto",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/projects/{{project_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "{{project_id}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Presupuesto vigente",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/budgets/{{budget_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "budgets",
+                "{{budget_id}}"
+              ]
+            },
+            "description": "Ítems facturables agrupados por módulo. Sin tarifas, costos ni tareas internas."
+          }
+        },
+        {
+          "name": "Aprobar presupuesto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/budgets/{{budget_id}}/approve",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "budgets",
+                "{{budget_id}}",
+                "approve"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Rechazar presupuesto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/budgets/{{budget_id}}/reject",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "budgets",
+                "{{budget_id}}",
+                "reject"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Cuenta y pagos",
+      "item": [
+        {
+          "name": "Estado de cuenta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/account",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "account"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cuotas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/charges",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "charges"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Cuotas vencidas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/charges?status=overdue",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "charges"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "overdue"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Informar pago",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/payments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": \"120000.00\",\n  \"paid_on\": \"2026-09-29\",\n  \"payment_method\": \"transfer\",\n  \"notes\": \"Transferencia de la cuota de septiembre\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "description": "Queda 'pending_review' hasta que un admin lo confirma en el back-office."
+          }
+        },
+        {
+          "name": "Mis pagos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/payments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Errores",
+      "item": [
+        {
+          "name": "401 · Sin token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/projects",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects"
+              ]
+            },
+            "auth": {
+              "type": "noauth"
+            }
+          }
+        },
+        {
+          "name": "404 · Proyecto de otro cliente",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/projects/999999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "projects",
+                "999999"
+              ]
+            }
+          }
+        },
+        {
+          "name": "422 · Pago inválido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/payments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"amount\": \"-10\",\n  \"payment_method\": \"bitcoin\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "400 · Estado de cuota inválido",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/charges?status=cualquiera",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "charges"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "cualquiera"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
