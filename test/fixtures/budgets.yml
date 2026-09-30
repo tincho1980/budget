@@ -1,21 +1,31 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  project: one
+acme_sent:
+  project: acme_web
   version: 1
   status: 1
-  buffer_percentage: 9.99
-  total: 9.99
-  sent_at: 2026-09-16 21:50:11
-  approved_at: 2026-09-16 21:50:11
-  notes: MyText
+  buffer_percentage: 0
+  total: 380000
+  sent_at: 2026-09-01 10:00:00
 
-two:
-  project: two
+acme_draft:
+  project: acme_web
+  version: 2
+  status: 0
+  buffer_percentage: 0
+  total: 0
+
+closed_approved:
+  project: acme_closed
+  version: 1
+  status: 2
+  buffer_percentage: 0
+  total: 300000
+  sent_at: 2025-06-01 10:00:00
+  approved_at: 2025-06-05 10:00:00
+
+globex_sent:
+  project: globex_app
   version: 1
   status: 1
-  buffer_percentage: 9.99
-  total: 9.99
-  sent_at: 2026-09-16 21:50:11
-  approved_at: 2026-09-16 21:50:11
-  notes: MyText
+  buffer_percentage: 0
+  total: 190000
+  sent_at: 2026-09-01 10:00:00

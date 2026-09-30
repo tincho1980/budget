@@ -1,21 +1,27 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+acme_sent_login:
+  budget: acme_sent
+  rate: senior_current
+  module_name: Autenticación
+  description: Login
+  estimated_hours: 10
+  level: 2
+  billable: true
+  position: 0
 
-one:
-  budget: one
-  rate: one
-  module_name: MyString
-  description: MyString
-  estimated_hours: 9.99
-  level: 1
-  billable: false
-  position: 1
+closed_item:
+  budget: closed_approved
+  rate: senior_previous
+  description: Tarea de un proyecto cerrado
+  estimated_hours: 10
+  level: 2
+  billable: true
+  position: 0
 
-two:
-  budget: two
-  rate: two
-  module_name: MyString
-  description: MyString
-  estimated_hours: 9.99
-  level: 1
-  billable: false
-  position: 1
+globex_item:
+  budget: globex_sent
+  rate: senior_current
+  description: Pantalla principal
+  estimated_hours: 5
+  level: 2
+  billable: true
+  position: 0

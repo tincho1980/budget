@@ -19,6 +19,10 @@ class User < ApplicationRecord
   validates :email_address, presence: true, uniqueness: true
   validate :client_matches_role
 
+  def staff?
+    role_admin? || role_developer?
+  end
+
   private
 
   def client_matches_role

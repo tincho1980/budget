@@ -1,17 +1,10 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+acme:
+  business_name: Acme SA
+  tax_id: 30-11111111-1
+  email: contacto@acme.com.ar
+  active: true
 
-one:
-  business_name: MyString
-  contact_name: MyString
-  email: MyString
-  tax_id: MyString
-  phone: MyString
-  active: false
-
-two:
-  business_name: MyString
-  contact_name: MyString
-  email: MyString
-  tax_id: MyString
-  phone: MyString
-  active: false
+globex:
+  business_name: Globex SRL
+  tax_id: 30-22222222-2
+  active: true

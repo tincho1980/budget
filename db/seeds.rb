@@ -6,8 +6,8 @@
 # Dates are relative to today so the collection scenarios (up to date, partial
 # payment, overdue) still hold whenever the seeds are run.
 #
-# Budget totals and charge statuses are set here by hand. Once calculate_total!
-# and payment application are implemented, the seeds should use them instead.
+# Budget totals and charge statuses come from the models (calculate_total!,
+# refresh_status!), so the seeds exercise the same rules as the app.
 
 Faker::Config.locale = "es-AR"
 Faker::Config.random = Random.new(42)
@@ -19,15 +19,10 @@ def rate_for(level, date)
   Rate.where(level: level).where(valid_from: ..date).order(valid_from: :desc).first!
 end
 
+# Items can only be added to drafts (rule 4), so the budget is created as a
+# draft and moved to its final status afterwards.
 def build_budget(project, version:, status:, created_on:, items:, buffer: 15)
-  budget = project.budgets.create!(
-    version: version,
-    status: status,
-    buffer_percentage: buffer,
-    created_at: created_on,
-    sent_at: (created_on + 2.days unless status == :draft),
-    approved_at: (created_on + 7.days if status == :approved)
-  )
+  budget = project.budgets.create!(version: version, buffer_percentage: buffer, created_at: created_on)
 
   items.each_with_index do |(module_name, description, hours, level, billable), position|
     budget.budget_items.create!(
@@ -41,8 +36,11 @@ def build_budget(project, version:, status:, created_on:, items:, buffer: 15)
     )
   end
 
-  billable_cost = budget.budget_items.select(&:billable).sum { |item| item.estimated_hours * item.rate.hourly_value }
-  budget.update!(total: (billable_cost * (1 + budget.buffer_percentage / 100)).round(2))
+  budget.update!(
+    status: status,
+    sent_at: (created_on + 2.days unless status == :draft),
+    approved_at: (created_on + 7.days if status == :approved)
+  )
   budget
 end
 
@@ -64,7 +62,7 @@ def build_charges(contract, registered_by:, unpaid_months: 0, partial_last: fals
     recent_index = due_months.size - 1 - due_months.index(month)
 
     if recent_index < unpaid_months
-      charge.overdue!
+      charge.refresh_status!
       next
     end
 
@@ -79,7 +77,6 @@ def build_charges(contract, registered_by:, unpaid_months: 0, partial_last: fals
       status: :confirmed
     )
     payment.payment_applications.create!(maintenance_charge: charge, applied_amount: applied)
-    charge.update!(status: partial ? :partial : :paid)
   end
 end
 
@@ -160,7 +157,16 @@ ActiveRecord::Base.transaction do
 
   survey_project = clients[:no_contract].projects.create!(name: "Sitio del club",
     description: "Sitio institucional e inscripción online de socios", status: :survey, started_on: TODAY - 10)
-  build_budget(survey_project, version: 1, status: :draft, created_on: TODAY - 5, items: survey_items)
+  # Sent and waiting for the client: approve or reject it from the API.
+  build_budget(survey_project, version: 1, status: :sent, created_on: TODAY - 5, items: survey_items)
+
+  # Still a draft: items can be added or edited from the back-office.
+  draft_project = clients[:overdue].projects.create!(name: "Portal de pedidos mayoristas",
+    description: "Pedidos online para clientes mayoristas", status: :survey, started_on: TODAY - 3)
+  build_budget(draft_project, version: 1, status: :draft, created_on: TODAY - 1, items: [
+    [ "Catálogo", "Listado de productos con precios mayoristas", 20, :semi, true ],
+    [ "Pedidos", "Carrito y confirmación de pedido", 28, :senior, true ]
+  ])
 
   in_progress_project = clients[:partial].projects.create!(name: "Sistema de liquidaciones",
     description: "Gestión de clientes y liquidación de honorarios", status: :in_progress, started_on: TODAY << 2)
@@ -219,5 +225,6 @@ ActiveRecord::Base.transaction do
     puts "  #{model.name.ljust(20)} #{model.count}"
   end
   puts "Cuotas vencidas: #{MaintenanceCharge.overdue.count} · parciales: #{MaintenanceCharge.partial.count}"
-  puts "Acceso: admin@adavra.com / #{PASSWORD}"
+  puts "Back-office: admin@adavra.com / #{PASSWORD}"
+  puts "API (presupuesto para aprobar): portal@clubsocial.com.ar / #{PASSWORD}"
 end

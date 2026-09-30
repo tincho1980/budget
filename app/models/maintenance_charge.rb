@@ -10,6 +10,8 @@ class MaintenanceCharge < ApplicationRecord
   validates :amount, numericality: { greater_than: 0 }
   validates :due_on, presence: true
 
+  scope :unpaid, -> { where.not(status: :paid) }
+
   # Summed in Ruby so preloaded applications don't trigger one query per charge.
   def paid_amount
     payment_applications.sum(&:applied_amount)
@@ -21,5 +23,17 @@ class MaintenanceCharge < ApplicationRecord
 
   def days_overdue
     [ (Date.current - due_on).to_i, 0 ].max
+  end
+
+  # Rules 12 and 15: status follows from what was applied and the due date.
+  def refresh_status!
+    applied = payment_applications.sum(:applied_amount)
+    new_status =
+      if applied >= amount then :paid
+      elsif applied.positive? then :partial
+      elsif due_on < Date.current then :overdue
+      else :pending
+      end
+    update!(status: new_status)
   end
 end

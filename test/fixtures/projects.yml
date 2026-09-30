@@ -1,17 +1,14 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  client: one
-  name: MyString
-  description: MyText
+acme_web:
+  client: acme
+  name: Sitio web Acme
   status: 1
-  started_on: 2026-09-16
-  closed_on: 2026-09-16
 
-two:
-  client: two
-  name: MyString
-  description: MyText
-  status: 1
-  started_on: 2026-09-16
-  closed_on: 2026-09-16
+acme_closed:
+  client: acme
+  name: Proyecto cerrado
+  status: 3
+
+globex_app:
+  client: globex
+  name: App Globex
+  status: 0

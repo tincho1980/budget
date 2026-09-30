@@ -1,9 +1,33 @@
 <% password_digest = BCrypt::Password.create("password") %>
 
-one:
-  email_address: one@example.com
+admin:
+  name: Admin
+  email_address: admin@example.com
   password_digest: <%= password_digest %>
+  role: 100
+  level: 2
+  api_token: admin-token
 
-two:
-  email_address: two@example.com
+developer:
+  name: Dev
+  email_address: dev@example.com
   password_digest: <%= password_digest %>
+  role: 80
+  level: 0
+  api_token: developer-token
+
+acme_portal:
+  name: Portal Acme
+  email_address: portal@acme.com.ar
+  password_digest: <%= password_digest %>
+  role: 50
+  client: acme
+  api_token: acme-token
+
+globex_portal:
+  name: Portal Globex
+  email_address: portal@globex.com.ar
+  password_digest: <%= password_digest %>
+  role: 50
+  client: globex
+  api_token: globex-token
