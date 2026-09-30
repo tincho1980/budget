@@ -1,1 +1,31 @@
 @import "tailwindcss";
+
+@layer components {
+  .page-title { @apply text-2xl font-bold; }
+  .page-header { @apply flex flex-wrap items-center justify-between gap-3 mb-6; }
+  .section-title { @apply text-lg font-semibold mt-8 mb-3; }
+
+  .btn { @apply inline-block px-3 py-1.5 rounded border border-gray-300 bg-white text-sm cursor-pointer hover:bg-gray-50; }
+  .btn-primary { @apply inline-block px-3 py-1.5 rounded bg-blue-700 text-white text-sm cursor-pointer hover:bg-blue-800; }
+  .btn-danger { @apply inline-block px-3 py-1.5 rounded border border-red-300 text-red-700 bg-white text-sm cursor-pointer hover:bg-red-50; }
+  .link { @apply text-blue-700 underline hover:no-underline; }
+
+  .data-table { @apply w-full text-sm border-collapse; }
+  .data-table th { @apply text-left font-medium text-gray-500 border-b px-2 py-2 whitespace-nowrap; }
+  .data-table td { @apply border-b border-gray-100 px-2 py-2 align-top; }
+  .num { @apply text-right tabular-nums whitespace-nowrap; }
+
+  .details { @apply grid grid-cols-[max-content_1fr] gap-x-6 gap-y-1 text-sm; }
+  .details dt { @apply text-gray-500; }
+
+  .form-field { @apply mb-4; }
+  .form-field label { @apply block text-sm font-medium mb-1; }
+  .form-input { @apply border border-gray-300 rounded px-2 py-1.5 w-full max-w-md; }
+
+  .badge { @apply inline-block px-2 py-0.5 rounded-full text-xs bg-gray-100 whitespace-nowrap; }
+  .badge-draft, .badge-pending, .badge-pending_review, .badge-survey, .badge-paused { @apply bg-amber-100 text-amber-900; }
+  .badge-sent, .badge-in_progress, .badge-partial { @apply bg-blue-100 text-blue-900; }
+  .badge-approved, .badge-paid, .badge-confirmed, .badge-active, .badge-delivered { @apply bg-green-100 text-green-900; }
+  .badge-rejected, .badge-overdue, .badge-cancelled { @apply bg-red-100 text-red-900; }
+  .badge-closed { @apply bg-gray-200 text-gray-700; }
+}

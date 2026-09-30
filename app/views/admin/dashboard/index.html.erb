@@ -2,13 +2,20 @@
 
 <h1 class="text-2xl font-bold mb-6">Dashboard de cobranza</h1>
 
-<section class="mb-8">
-  <table>
-    <tr><th class="text-left pr-6">Cobrado este mes</th><td><%= number_to_currency(@collected_this_month) %></td></tr>
-    <tr><th class="text-left pr-6">Pendiente (no vencido)</th><td><%= number_to_currency(@pending_total) %></td></tr>
-    <tr><th class="text-left pr-6">Vencido</th><td><%= number_to_currency(@overdue_total) %></td></tr>
-  </table>
-</section>
+<dl class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+  <div class="border rounded p-4 bg-white">
+    <dt class="text-sm text-gray-500">Cobrado este mes</dt>
+    <dd class="text-2xl font-semibold tabular-nums text-green-700"><%= number_to_currency(@collected_this_month) %></dd>
+  </div>
+  <div class="border rounded p-4 bg-white">
+    <dt class="text-sm text-gray-500">Pendiente (no vencido)</dt>
+    <dd class="text-2xl font-semibold tabular-nums"><%= number_to_currency(@pending_total) %></dd>
+  </div>
+  <div class="border rounded p-4 bg-white">
+    <dt class="text-sm text-gray-500">Vencido</dt>
+    <dd class="text-2xl font-semibold tabular-nums text-red-700"><%= number_to_currency(@overdue_total) %></dd>
+  </div>
+</dl>
 
 <section class="mb-8">
   <h2 class="text-xl font-bold mb-2">Cuotas vencidas por antigüedad</h2>
