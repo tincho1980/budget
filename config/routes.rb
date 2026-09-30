@@ -41,5 +41,23 @@ Rails.application.routes.draw do
     resources :users, except: %i[ show destroy ]
   end
 
+  namespace :api, defaults: { format: :json } do
+    namespace :v1 do
+      post "login", to: "sessions#create"
+      delete "logout", to: "sessions#destroy"
+
+      resources :projects, only: %i[ index show ]
+      resources :budgets, only: :show do
+        member do
+          post :approve
+          post :reject
+        end
+      end
+      resource :account, only: :show
+      resources :charges, only: :index
+      resources :payments, only: %i[ index create ]
+    end
+  end
+
   root "admin/dashboard#index"
 end
