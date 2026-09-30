@@ -1,0 +1,22 @@
+<% content_for :title, "Nueva tarifa" %>
+<h1 class="page-title mb-6">Nueva tarifa</h1>
+
+<%= form_with model: [ :admin, @rate ] do |form| %>
+  <%= render "admin/shared/errors", record: @rate %>
+
+  <div class="form-field">
+    <%= form.label :level %>
+    <%= form.select :level, enum_options(Rate, :levels), { prompt: "Elegí un nivel" }, class: "form-input", required: true %>
+  </div>
+  <div class="form-field">
+    <%= form.label :hourly_value %>
+    <%= form.number_field :hourly_value, step: "0.01", min: 0, class: "form-input", required: true %>
+  </div>
+  <div class="form-field">
+    <%= form.label :valid_from %>
+    <%= form.date_field :valid_from, class: "form-input", required: true %>
+  </div>
+
+  <%= form.submit "Guardar", class: "btn-primary" %>
+  <%= link_to "Cancelar", admin_rates_path, class: "btn" %>
+<% end %>

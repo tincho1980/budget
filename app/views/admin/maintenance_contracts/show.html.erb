@@ -1,0 +1,25 @@
+<% content_for :title, "Contrato de #{@contract.client.business_name}" %>
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Contrato de mantenimiento <%= render "admin/shared/status", status: @contract.status %></h1>
+    <p class="text-sm text-gray-500"><%= link_to @contract.client.business_name, admin_client_path(@contract.client), class: "link" %></p>
+  </div>
+  <div class="flex flex-wrap gap-2">
+    <%= button_to "Generar cuota del mes", generate_charge_admin_maintenance_contract_path(@contract), class: "btn-primary" %>
+    <%= link_to "Editar", edit_admin_maintenance_contract_path(@contract), class: "btn" %>
+    <%= link_to "Registrar pago", new_admin_payment_path(client_id: @contract.client_id), class: "btn" %>
+  </div>
+</div>
+
+<dl class="details mb-6">
+  <dt>Monto mensual</dt><dd><%= number_to_currency(@contract.monthly_amount) %></dd>
+  <dt>Vence el día</dt><dd><%= @contract.due_day %> de cada mes</dd>
+  <dt>Alta</dt><dd><%= l(@contract.starts_on) %></dd>
+  <dt>Baja</dt><dd><%= @contract.ends_on ? l(@contract.ends_on) : "—" %></dd>
+  <dt>Proyecto</dt><dd><%= @contract.project ? link_to(@contract.project.name, admin_project_path(@contract.project), class: "link") : "—" %></dd>
+  <dt>Saldo adeudado</dt><dd class="font-semibold"><%= number_to_currency(@charges.reject(&:paid?).sum(&:balance)) %></dd>
+</dl>
+
+<h2 class="section-title">Cuotas</h2>
+<%= render "admin/maintenance_charges/table", charges: @charges, show_client: false %>

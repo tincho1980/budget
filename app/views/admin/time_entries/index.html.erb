@@ -1,0 +1,28 @@
+<% content_for :title, "Registro de horas" %>
+
+<div class="page-header">
+  <h1 class="page-title">Registro de horas</h1>
+  <%= link_to "Cargar horas", new_admin_time_entry_path, class: "btn-primary" %>
+</div>
+
+<table class="data-table">
+  <thead><tr><th>Fecha</th><th>Usuario</th><th>Proyecto</th><th>Tarea</th><th>Detalle</th><th class="num">Horas</th><th></th></tr></thead>
+  <tbody>
+    <% @time_entries.each do |entry| %>
+      <% budget = entry.budget_item.budget %>
+      <tr>
+        <td><%= l(entry.worked_on) %></td>
+        <td><%= entry.user.name %></td>
+        <td><%= link_to budget.project.name, admin_budget_path(budget), class: "link" %></td>
+        <td><%= entry.budget_item.description %></td>
+        <td><%= entry.description %></td>
+        <td class="num"><%= hours(entry.hours) %></td>
+        <td>
+          <% if Current.user.role_admin? || entry.user == Current.user %>
+            <%= button_to "Borrar", admin_time_entry_path(entry), method: :delete, class: "link", form: { class: "inline" } %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

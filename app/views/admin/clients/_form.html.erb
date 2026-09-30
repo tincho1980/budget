@@ -1,0 +1,31 @@
+<%= form_with model: [ :admin, client ] do |form| %>
+  <%= render "admin/shared/errors", record: client %>
+
+  <div class="form-field">
+    <%= form.label :business_name %>
+    <%= form.text_field :business_name, class: "form-input", required: true %>
+  </div>
+  <div class="form-field">
+    <%= form.label :tax_id %>
+    <%= form.text_field :tax_id, class: "form-input", placeholder: "30-12345678-9" %>
+  </div>
+  <div class="form-field">
+    <%= form.label :contact_name %>
+    <%= form.text_field :contact_name, class: "form-input" %>
+  </div>
+  <div class="form-field">
+    <%= form.label :email %>
+    <%= form.email_field :email, class: "form-input" %>
+  </div>
+  <div class="form-field">
+    <%= form.label :phone %>
+    <%= form.text_field :phone, class: "form-input" %>
+  </div>
+  <div class="form-field flex items-center gap-2">
+    <%= form.check_box :active %>
+    <%= form.label :active, class: "mb-0" %>
+  </div>
+
+  <%= form.submit "Guardar", class: "btn-primary" %>
+  <%= link_to "Cancelar", client.persisted? ? admin_client_path(client) : admin_clients_path, class: "btn" %>
+<% end %>

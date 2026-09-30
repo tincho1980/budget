@@ -1,0 +1,38 @@
+<%= form_with model: [ :admin, contract ] do |form| %>
+  <%= render "admin/shared/errors", record: contract %>
+
+  <div class="form-field">
+    <%= form.label :client_id %>
+    <%= form.collection_select :client_id, Client.order(:business_name), :id, :business_name,
+          { prompt: "Elegí un cliente" }, class: "form-input", required: true %>
+  </div>
+  <div class="form-field">
+    <%= form.label :project_id %>
+    <%= form.collection_select :project_id, Project.includes(:client).order(:name), :id, :name,
+          { include_blank: "Sin proyecto asociado" }, class: "form-input" %>
+  </div>
+  <div class="form-field">
+    <%= form.label :monthly_amount %>
+    <%= form.number_field :monthly_amount, step: "0.01", min: 0, class: "form-input", required: true %>
+    <p class="text-xs text-gray-500 mt-1">Un cambio de monto se aplica a las cuotas nuevas; las ya generadas conservan su valor.</p>
+  </div>
+  <div class="form-field">
+    <%= form.label :due_day %>
+    <%= form.number_field :due_day, min: 1, max: 28, class: "form-input", required: true %>
+  </div>
+  <div class="form-field">
+    <%= form.label :starts_on %>
+    <%= form.date_field :starts_on, class: "form-input", required: true %>
+  </div>
+  <div class="form-field">
+    <%= form.label :ends_on %>
+    <%= form.date_field :ends_on, class: "form-input" %>
+  </div>
+  <div class="form-field">
+    <%= form.label :status %>
+    <%= form.select :status, enum_options(MaintenanceContract, :statuses), {}, class: "form-input" %>
+  </div>
+
+  <%= form.submit "Guardar", class: "btn-primary" %>
+  <%= link_to "Cancelar", contract.persisted? ? admin_maintenance_contract_path(contract) : admin_maintenance_contracts_path, class: "btn" %>
+<% end %>

@@ -1,0 +1,27 @@
+<% content_for :title, "Proyectos" %>
+
+<div class="page-header">
+  <h1 class="page-title">Proyectos</h1>
+  <%= link_to "Nuevo proyecto", new_admin_project_path, class: "btn-primary" %>
+</div>
+
+<nav class="flex flex-wrap gap-2 mb-4 text-sm">
+  <%= link_to "Todos", admin_projects_path, class: "btn" %>
+  <% Project.statuses.each_key do |status| %>
+    <%= link_to status_label(status), admin_projects_path(status: status), class: "btn" %>
+  <% end %>
+</nav>
+
+<table class="data-table">
+  <thead><tr><th>Proyecto</th><th>Cliente</th><th>Estado</th><th>Inicio</th></tr></thead>
+  <tbody>
+    <% @projects.each do |project| %>
+      <tr>
+        <td><%= link_to project.name, admin_project_path(project), class: "link" %></td>
+        <td><%= link_to project.client.business_name, admin_client_path(project.client) %></td>
+        <td><%= render "admin/shared/status", status: project.status %></td>
+        <td><%= project.started_on && l(project.started_on) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

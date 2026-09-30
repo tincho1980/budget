@@ -1,0 +1,42 @@
+<% content_for :title, "Pago de #{@payment.client.business_name}" %>
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Pago <%= render "admin/shared/status", status: @payment.status %></h1>
+    <p class="text-sm text-gray-500"><%= link_to @payment.client.business_name, admin_client_path(@payment.client), class: "link" %></p>
+  </div>
+  <% if @payment.pending_review? %>
+    <div class="flex gap-2">
+      <%= button_to "Confirmar e imputar", confirm_admin_payment_path(@payment), method: :patch, class: "btn-primary" %>
+      <%= button_to "Rechazar", reject_admin_payment_path(@payment), method: :patch, class: "btn-danger" %>
+    </div>
+  <% end %>
+</div>
+
+<dl class="details mb-6">
+  <dt>Fecha</dt><dd><%= l(@payment.paid_on) %></dd>
+  <dt>Monto</dt><dd><%= number_to_currency(@payment.amount) %></dd>
+  <dt>Medio</dt><dd><%= status_label(@payment.payment_method) %></dd>
+  <dt>Registrado por</dt><dd><%= @payment.registered_by.name %></dd>
+  <dt>Sin imputar</dt><dd><%= number_to_currency(@payment.unapplied_amount) %></dd>
+  <dt>Notas</dt><dd><%= @payment.notes.presence || "—" %></dd>
+</dl>
+
+<h2 class="section-title">Imputación a cuotas</h2>
+<% if @applications.any? %>
+  <table class="data-table">
+    <thead><tr><th>Período</th><th>Vencimiento</th><th>Estado de la cuota</th><th class="num">Imputado</th></tr></thead>
+    <tbody>
+      <% @applications.each do |application| %>
+        <tr>
+          <td class="tabular-nums"><%= application.maintenance_charge.period %></td>
+          <td><%= l(application.maintenance_charge.due_on) %></td>
+          <td><%= render "admin/shared/status", status: application.maintenance_charge.status %></td>
+          <td class="num"><%= number_to_currency(application.applied_amount) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-sm text-gray-500">Este pago todavía no se imputó a ninguna cuota.</p>
+<% end %>

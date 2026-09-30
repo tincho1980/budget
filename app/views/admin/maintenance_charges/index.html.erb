@@ -1,0 +1,14 @@
+<% content_for :title, "Cuotas" %>
+
+<div class="page-header">
+  <h1 class="page-title">Cuotas de mantenimiento</h1>
+</div>
+
+<nav class="flex flex-wrap gap-2 mb-4 text-sm">
+  <%= link_to "Todas", admin_maintenance_charges_path, class: "btn" %>
+  <% MaintenanceCharge.statuses.each_key do |status| %>
+    <%= link_to status_label(status), admin_maintenance_charges_path(status: status), class: "btn" %>
+  <% end %>
+</nav>
+
+<%= render "table", charges: @charges, show_client: true %>

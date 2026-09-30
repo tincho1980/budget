@@ -1,0 +1,22 @@
+<% content_for :title, "Contratos de mantenimiento" %>
+
+<div class="page-header">
+  <h1 class="page-title">Contratos de mantenimiento</h1>
+  <%= link_to "Nuevo contrato", new_admin_maintenance_contract_path, class: "btn-primary" %>
+</div>
+
+<table class="data-table">
+  <thead><tr><th>Cliente</th><th>Proyecto</th><th>Estado</th><th>Alta</th><th>Vence el día</th><th class="num">Monto mensual</th></tr></thead>
+  <tbody>
+    <% @contracts.each do |contract| %>
+      <tr>
+        <td><%= link_to contract.client.business_name, admin_maintenance_contract_path(contract), class: "link" %></td>
+        <td><%= contract.project&.name || "—" %></td>
+        <td><%= render "admin/shared/status", status: contract.status %></td>
+        <td><%= l(contract.starts_on) %></td>
+        <td><%= contract.due_day %></td>
+        <td class="num"><%= number_to_currency(contract.monthly_amount) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

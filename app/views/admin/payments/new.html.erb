@@ -1,0 +1,32 @@
+<% content_for :title, "Registrar pago" %>
+<h1 class="page-title mb-1">Registrar pago</h1>
+<p class="text-sm text-gray-500 mb-6">Se imputa automáticamente a las cuotas impagas más antiguas del cliente.</p>
+
+<%= form_with model: [ :admin, @payment ] do |form| %>
+  <%= render "admin/shared/errors", record: @payment %>
+
+  <div class="form-field">
+    <%= form.label :client_id %>
+    <%= form.collection_select :client_id, Client.order(:business_name), :id, :business_name,
+          { prompt: "Elegí un cliente" }, class: "form-input", required: true %>
+  </div>
+  <div class="form-field">
+    <%= form.label :paid_on %>
+    <%= form.date_field :paid_on, class: "form-input", required: true %>
+  </div>
+  <div class="form-field">
+    <%= form.label :amount %>
+    <%= form.number_field :amount, step: "0.01", min: 0, class: "form-input", required: true %>
+  </div>
+  <div class="form-field">
+    <%= form.label :payment_method %>
+    <%= form.select :payment_method, enum_options(Payment, :payment_methods), {}, class: "form-input" %>
+  </div>
+  <div class="form-field">
+    <%= form.label :notes %>
+    <%= form.text_area :notes, rows: 2, class: "form-input" %>
+  </div>
+
+  <%= form.submit "Registrar", class: "btn-primary" %>
+  <%= link_to "Cancelar", admin_payments_path, class: "btn" %>
+<% end %>

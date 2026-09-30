@@ -1,0 +1,36 @@
+<% if charges.any? %>
+  <div class="overflow-x-auto">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Período</th>
+          <% if show_client %><th>Cliente</th><% end %>
+          <th>Vencimiento</th>
+          <th>Estado</th>
+          <th class="num">Atraso</th>
+          <th class="num">Monto</th>
+          <th class="num">Pagado</th>
+          <th class="num">Saldo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% charges.each do |charge| %>
+          <tr>
+            <td class="tabular-nums"><%= charge.period %></td>
+            <% if show_client %>
+              <td><%= link_to charge.maintenance_contract.client.business_name, admin_maintenance_contract_path(charge.maintenance_contract), class: "link" %></td>
+            <% end %>
+            <td><%= l(charge.due_on) %></td>
+            <td><%= render "admin/shared/status", status: charge.status %></td>
+            <td class="num"><%= charge.overdue? ? "#{charge.days_overdue} días" : "" %></td>
+            <td class="num"><%= number_to_currency(charge.amount) %></td>
+            <td class="num"><%= number_to_currency(charge.paid_amount) %></td>
+            <td class="num"><%= number_to_currency(charge.balance) %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <p class="text-sm text-gray-500">No hay cuotas.</p>
+<% end %>

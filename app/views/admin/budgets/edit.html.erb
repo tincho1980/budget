@@ -1,0 +1,4 @@
+<% content_for :title, "Editar presupuesto" %>
+<h1 class="page-title mb-1">Editar presupuesto</h1>
+<p class="text-sm text-gray-500 mb-6"><%= @budget.project.name %> · versión <%= @budget.version %></p>
+<%= render "form", budget: @budget %>

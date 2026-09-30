@@ -15,6 +15,30 @@ Rails.application.routes.draw do
 
   namespace :admin do
     root "dashboard#index"
+
+    resources :clients
+    resources :projects do
+      resources :budgets, shallow: true, except: :index do
+        member do
+          post :send_to_client
+          post :new_version
+        end
+        resources :budget_items, shallow: true, except: %i[ index show ]
+      end
+    end
+    resources :time_entries, only: %i[ index new create destroy ]
+    resources :rates, only: %i[ index new create ]
+    resources :maintenance_contracts do
+      member { post :generate_charge }
+    end
+    resources :maintenance_charges, only: :index
+    resources :payments, except: %i[ edit update destroy ] do
+      member do
+        patch :confirm
+        patch :reject
+      end
+    end
+    resources :users, except: %i[ show destroy ]
   end
 
   root "admin/dashboard#index"

@@ -1,0 +1,34 @@
+<% content_for :title, "Cargar horas" %>
+<h1 class="page-title mb-6">Cargar horas</h1>
+
+<%= form_with model: [ :admin, @time_entry ] do |form| %>
+  <%= render "admin/shared/errors", record: @time_entry %>
+
+  <div class="form-field">
+    <%= form.label :budget_item_id, "Tarea" %>
+    <%= form.select :budget_item_id, grouped_options_for_select(@task_options, @time_entry.budget_item_id),
+          { prompt: "Elegí una tarea" }, class: "form-input", required: true %>
+    <p class="text-xs text-gray-500 mt-1">Tareas de presupuestos aprobados en proyectos abiertos.</p>
+  </div>
+  <% if Current.user.role_admin? %>
+    <div class="form-field">
+      <%= form.label :user_id %>
+      <%= form.collection_select :user_id, User.where(role: %i[ developer admin ]).order(:name), :id, :name, {}, class: "form-input" %>
+    </div>
+  <% end %>
+  <div class="form-field">
+    <%= form.label :worked_on %>
+    <%= form.date_field :worked_on, class: "form-input", required: true %>
+  </div>
+  <div class="form-field">
+    <%= form.label :hours %>
+    <%= form.number_field :hours, step: "0.25", min: 0.25, max: 24, class: "form-input", required: true %>
+  </div>
+  <div class="form-field">
+    <%= form.label :description %>
+    <%= form.text_field :description, class: "form-input" %>
+  </div>
+
+  <%= form.submit "Guardar", class: "btn-primary" %>
+  <%= link_to "Cancelar", admin_time_entries_path, class: "btn" %>
+<% end %>

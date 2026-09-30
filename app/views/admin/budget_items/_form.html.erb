@@ -1,0 +1,32 @@
+<%= form_with model: (item.persisted? ? [ :admin, item ] : [ :admin, item.budget, item ]) do |form| %>
+  <%= render "admin/shared/errors", record: item %>
+
+  <div class="form-field">
+    <%= form.label :module_name %>
+    <%= form.text_field :module_name, class: "form-input", placeholder: "Ej.: Autenticación" %>
+  </div>
+  <div class="form-field">
+    <%= form.label :description %>
+    <%= form.text_field :description, class: "form-input", required: true %>
+  </div>
+  <div class="form-field">
+    <%= form.label :estimated_hours %>
+    <%= form.number_field :estimated_hours, step: "0.25", min: 0, class: "form-input", required: true %>
+  </div>
+  <div class="form-field">
+    <%= form.label :level %>
+    <%= form.select :level, enum_options(BudgetItem, :levels), { prompt: "Elegí un nivel" }, class: "form-input", required: true %>
+    <p class="text-xs text-gray-500 mt-1">Se valoriza con la tarifa vigente de ese nivel y queda congelada.</p>
+  </div>
+  <div class="form-field">
+    <%= form.label :position %>
+    <%= form.number_field :position, class: "form-input" %>
+  </div>
+  <div class="form-field flex items-center gap-2">
+    <%= form.check_box :billable %>
+    <%= form.label :billable %>
+  </div>
+
+  <%= form.submit "Guardar", class: "btn-primary" %>
+  <%= link_to "Cancelar", admin_budget_path(item.budget), class: "btn" %>
+<% end %>

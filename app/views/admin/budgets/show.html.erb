@@ -1,0 +1,87 @@
+<% content_for :title, "#{@budget.project.name} v#{@budget.version}" %>
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Presupuesto v<%= @budget.version %> <%= render "admin/shared/status", status: @budget.status %></h1>
+    <p class="text-sm text-gray-500">
+      <%= link_to @budget.project.name, admin_project_path(@budget.project), class: "link" %> ·
+      <%= @budget.project.client.business_name %>
+    </p>
+  </div>
+  <div class="flex flex-wrap gap-2">
+    <% if @budget.draft? %>
+      <%= link_to "Editar buffer y notas", edit_admin_budget_path(@budget), class: "btn" %>
+      <%= button_to "Enviar al cliente", send_to_client_admin_budget_path(@budget), class: "btn-primary",
+            form: { data: { turbo_confirm: "Una vez enviado ya no se puede modificar. ¿Continuar?" } } %>
+      <%= button_to "Eliminar borrador", admin_budget_path(@budget), method: :delete, class: "btn-danger",
+            form: { data: { turbo_confirm: "¿Eliminar este borrador?" } } %>
+    <% else %>
+      <%= button_to "Crear nueva versión", new_version_admin_budget_path(@budget), class: "btn" %>
+    <% end %>
+  </div>
+</div>
+
+<dl class="details mb-6">
+  <dt>Buffer</dt><dd><%= number_to_percentage(@budget.buffer_percentage, precision: 2, strip_insignificant_zeros: true) %></dd>
+  <dt>Enviado</dt><dd><%= @budget.sent_at ? l(@budget.sent_at, format: :short) : "—" %></dd>
+  <dt>Aprobado</dt><dd><%= @budget.approved_at ? l(@budget.approved_at, format: :short) : "—" %></dd>
+  <dt>Notas</dt><dd><%= @budget.notes.presence || "—" %></dd>
+</dl>
+
+<div class="flex items-center justify-between">
+  <h2 class="section-title">Ítems</h2>
+  <% if @budget.draft? %>
+    <%= link_to "Agregar ítem", new_admin_budget_budget_item_path(@budget), class: "btn" %>
+  <% end %>
+</div>
+
+<div class="overflow-x-auto">
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Módulo</th>
+        <th>Tarea</th>
+        <th>Nivel</th>
+        <th class="num">Valor hora</th>
+        <th class="num">Horas est.</th>
+        <th class="num">Horas reales</th>
+        <th class="num">Desvío</th>
+        <th class="num">Subtotal</th>
+        <% if @budget.draft? %><th></th><% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @items.each do |item| %>
+        <tr class="<%= "text-gray-400" unless item.billable %>">
+          <td><%= item.module_name %></td>
+          <td><%= item.description %><%= " (no facturable)" unless item.billable %></td>
+          <td><%= status_label(item.level) %></td>
+          <td class="num"><%= number_to_currency(item.rate.hourly_value) %></td>
+          <td class="num"><%= hours(item.estimated_hours) %></td>
+          <td class="num"><%= hours(item.logged_hours) %></td>
+          <td class="num <%= item.deviation.positive? ? "text-red-700" : "text-green-700" %>">
+            <%= item.deviation.positive? ? "+" : "" %><%= hours(item.deviation) %>
+          </td>
+          <td class="num"><%= number_to_currency(item.subtotal) %></td>
+          <% if @budget.draft? %>
+            <td class="whitespace-nowrap">
+              <%= link_to "Editar", edit_admin_budget_item_path(item), class: "link" %>
+              <%= button_to "Quitar", admin_budget_item_path(item), method: :delete, class: "link ml-2",
+                    form: { class: "inline" } %>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" class="font-medium">Total al cliente (facturables + <%= number_to_percentage(@budget.buffer_percentage, precision: 0) %> de buffer)</td>
+        <td class="num"><%= hours(@budget.estimated_hours) %></td>
+        <td class="num"><%= hours(@budget.logged_hours) %></td>
+        <td></td>
+        <td class="num font-semibold text-base"><%= number_to_currency(@budget.total) %></td>
+        <% if @budget.draft? %><td></td><% end %>
+      </tr>
+    </tfoot>
+  </table>
+</div>

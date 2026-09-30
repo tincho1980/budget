@@ -1,0 +1,47 @@
+<% content_for :title, @project.name %>
+
+<div class="page-header">
+  <div>
+    <h1 class="page-title"><%= @project.name %></h1>
+    <p class="text-sm text-gray-500"><%= link_to @project.client.business_name, admin_client_path(@project.client), class: "link" %></p>
+  </div>
+  <div class="flex gap-2">
+    <%= link_to "Editar", edit_admin_project_path(@project), class: "btn" %>
+    <%= button_to "Eliminar", admin_project_path(@project), method: :delete, class: "btn-danger",
+          form: { data: { turbo_confirm: "¿Eliminar este proyecto?" } } %>
+  </div>
+</div>
+
+<dl class="details">
+  <dt>Estado</dt><dd><%= render "admin/shared/status", status: @project.status %></dd>
+  <dt>Descripción</dt><dd><%= @project.description %></dd>
+  <dt>Inicio</dt><dd><%= @project.started_on && l(@project.started_on) %></dd>
+  <dt>Cierre</dt><dd><%= @project.closed_on && l(@project.closed_on) %></dd>
+  <% if @approved_budget %>
+    <dt>Horas estimadas / reales</dt>
+    <dd class="tabular-nums"><%= hours(@approved_budget.estimated_hours) %> / <%= hours(@approved_budget.logged_hours) %></dd>
+  <% end %>
+</dl>
+
+<div class="flex items-center justify-between">
+  <h2 class="section-title">Presupuestos</h2>
+  <%= link_to "Nuevo presupuesto", new_admin_project_budget_path(@project), class: "btn" %>
+</div>
+<% if @budgets.any? %>
+  <table class="data-table">
+    <thead><tr><th>Versión</th><th>Estado</th><th>Enviado</th><th>Aprobado</th><th class="num">Total</th></tr></thead>
+    <tbody>
+      <% @budgets.each do |budget| %>
+        <tr>
+          <td><%= link_to "v#{budget.version}", admin_budget_path(budget), class: "link" %></td>
+          <td><%= render "admin/shared/status", status: budget.status %></td>
+          <td><%= budget.sent_at && l(budget.sent_at.to_date) %></td>
+          <td><%= budget.approved_at && l(budget.approved_at.to_date) %></td>
+          <td class="num"><%= number_to_currency(budget.total) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-sm text-gray-500">Todavía no hay presupuestos.</p>
+<% end %>

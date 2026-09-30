@@ -1,0 +1,25 @@
+<% content_for :title, "Tarifas" %>
+
+<div class="page-header">
+  <h1 class="page-title">Tarifas por hora</h1>
+  <%= link_to "Nueva tarifa", new_admin_rate_path, class: "btn-primary" %>
+</div>
+
+<p class="text-sm text-gray-500 mb-4 max-w-2xl">
+  Las tarifas no se editan: un cambio de precio es una tarifa nueva con su fecha de vigencia.
+  Así los presupuestos ya emitidos conservan el valor con el que se calcularon.
+</p>
+
+<table class="data-table">
+  <thead><tr><th>Nivel</th><th>Vigente desde</th><th class="num">Valor hora</th><th></th></tr></thead>
+  <tbody>
+    <% @rates.each do |rate| %>
+      <tr>
+        <td><%= status_label(rate.level) %></td>
+        <td><%= l(rate.valid_from) %></td>
+        <td class="num"><%= number_to_currency(rate.hourly_value) %></td>
+        <td><%= "Vigente" if @current_rates[rate.level] == rate %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

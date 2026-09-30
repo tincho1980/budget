@@ -1,0 +1,100 @@
+<% content_for :title, @client.business_name %>
+
+<div class="page-header">
+  <h1 class="page-title"><%= @client.business_name %></h1>
+  <div class="flex gap-2">
+    <%= link_to "Editar", edit_admin_client_path(@client), class: "btn" %>
+    <%= button_to "Eliminar", admin_client_path(@client), method: :delete, class: "btn-danger",
+          form: { data: { turbo_confirm: "¿Eliminar este cliente?" } } %>
+  </div>
+</div>
+
+<dl class="details">
+  <dt>CUIT</dt><dd><%= @client.tax_id %></dd>
+  <dt>Contacto</dt><dd><%= @client.contact_name %></dd>
+  <dt>Email</dt><dd><%= @client.email %></dd>
+  <dt>Teléfono</dt><dd><%= @client.phone %></dd>
+  <dt>Estado</dt><dd><%= @client.active? ? "Activo" : "Inactivo" %></dd>
+  <dt>Deuda</dt><dd class="font-semibold"><%= number_to_currency(@client.debt) %></dd>
+</dl>
+
+<div class="flex items-center justify-between">
+  <h2 class="section-title">Proyectos</h2>
+  <%= link_to "Nuevo proyecto", new_admin_project_path(client_id: @client.id), class: "btn" %>
+</div>
+<% if @projects.any? %>
+  <table class="data-table">
+    <thead><tr><th>Proyecto</th><th>Estado</th><th>Inicio</th></tr></thead>
+    <tbody>
+      <% @projects.each do |project| %>
+        <tr>
+          <td><%= link_to project.name, admin_project_path(project), class: "link" %></td>
+          <td><%= render "admin/shared/status", status: project.status %></td>
+          <td><%= project.started_on && l(project.started_on) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-sm text-gray-500">Sin proyectos.</p>
+<% end %>
+
+<div class="flex items-center justify-between">
+  <h2 class="section-title">Contratos de mantenimiento</h2>
+  <%= link_to "Nuevo contrato", new_admin_maintenance_contract_path(client_id: @client.id), class: "btn" %>
+</div>
+<% if @contracts.any? %>
+  <table class="data-table">
+    <thead><tr><th>Contrato</th><th>Estado</th><th class="num">Monto mensual</th><th>Vence el día</th></tr></thead>
+    <tbody>
+      <% @contracts.each do |contract| %>
+        <tr>
+          <td><%= link_to "Desde #{l(contract.starts_on)}", admin_maintenance_contract_path(contract), class: "link" %></td>
+          <td><%= render "admin/shared/status", status: contract.status %></td>
+          <td class="num"><%= number_to_currency(contract.monthly_amount) %></td>
+          <td><%= contract.due_day %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-sm text-gray-500">Sin contratos.</p>
+<% end %>
+
+<div class="flex items-center justify-between">
+  <h2 class="section-title">Usuarios del portal</h2>
+  <% if Current.user.role_admin? %>
+    <%= link_to "Nuevo usuario", new_admin_user_path(client_id: @client.id), class: "btn" %>
+  <% end %>
+</div>
+<% if @users.any? %>
+  <ul class="text-sm list-disc ml-5">
+    <% @users.each do |user| %>
+      <li><%= user.name %> · <%= user.email_address %></li>
+    <% end %>
+  </ul>
+<% else %>
+  <p class="text-sm text-gray-500">Sin usuarios del portal.</p>
+<% end %>
+
+<div class="flex items-center justify-between">
+  <h2 class="section-title">Últimos pagos</h2>
+  <%= link_to "Registrar pago", new_admin_payment_path(client_id: @client.id), class: "btn" %>
+</div>
+<% if @payments.any? %>
+  <table class="data-table">
+    <thead><tr><th>Fecha</th><th>Estado</th><th>Medio</th><th class="num">Monto</th></tr></thead>
+    <tbody>
+      <% @payments.each do |payment| %>
+        <tr>
+          <td><%= link_to l(payment.paid_on), admin_payment_path(payment), class: "link" %></td>
+          <td><%= render "admin/shared/status", status: payment.status %></td>
+          <td><%= status_label(payment.payment_method) %></td>
+          <td class="num"><%= number_to_currency(payment.amount) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-sm text-gray-500">Sin pagos.</p>
+<% end %>

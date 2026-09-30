@@ -1,0 +1,16 @@
+<%= form_with model: (budget.persisted? ? [ :admin, budget ] : [ :admin, budget.project, budget ]) do |form| %>
+  <%= render "admin/shared/errors", record: budget %>
+
+  <div class="form-field">
+    <%= form.label :buffer_percentage %>
+    <%= form.number_field :buffer_percentage, step: "0.01", min: 0, class: "form-input" %>
+    <p class="text-xs text-gray-500 mt-1">Margen sobre el costo de las tareas facturables.</p>
+  </div>
+  <div class="form-field">
+    <%= form.label :notes %>
+    <%= form.text_area :notes, rows: 3, class: "form-input" %>
+  </div>
+
+  <%= form.submit "Guardar", class: "btn-primary" %>
+  <%= link_to "Cancelar", budget.persisted? ? admin_budget_path(budget) : admin_project_path(budget.project), class: "btn" %>
+<% end %>
