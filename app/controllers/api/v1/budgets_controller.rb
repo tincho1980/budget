@@ -21,6 +21,7 @@ class Api::V1::BudgetsController < Api::V1::BaseController
 
   def decide(saved)
     if saved
+      BudgetMailer.decision_notice(@budget).deliver_later
       render :show
     else
       render_error(:unprocessable_content, "No se pudo registrar la decisión.", details: @budget.errors.full_messages)
