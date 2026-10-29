@@ -1,0 +1,9 @@
+<h1 style="font-size: 20px; margin: 0 0 16px;"><%= @client.business_name %> <%= @decision %> el presupuesto</h1>
+
+<p>
+  Proyecto: <strong><%= @budget.project.name %></strong><br>
+  Versión: v<%= @budget.version %><br>
+  Total: <%= number_to_currency(@budget.total) %>
+</p>
+
+<p><%= link_to "Ver el presupuesto en el back-office", admin_budget_url(@budget) %></p>

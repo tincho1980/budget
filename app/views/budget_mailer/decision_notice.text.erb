@@ -1,0 +1,7 @@
+<%= @client.business_name %> <%= @decision %> el presupuesto.
+
+Proyecto: <%= @budget.project.name %>
+Versión: v<%= @budget.version %>
+Total: <%= number_to_currency(@budget.total) %>
+
+Ver el presupuesto: <%= admin_budget_url(@budget) %>
