@@ -40,6 +40,7 @@ class Admin::BudgetsController < Admin::BaseController
 
   def send_to_client
     if @budget.send_to_client
+      BudgetMailer.sent_to_client(@budget).deliver_later
       redirect_to admin_budget_path(@budget), notice: "Presupuesto enviado al cliente."
     else
       redirect_to admin_budget_path(@budget), alert: @budget.errors.full_messages.to_sentence

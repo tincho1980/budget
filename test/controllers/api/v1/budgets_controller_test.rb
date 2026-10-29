@@ -32,6 +32,20 @@ class Api::V1::BudgetsControllerTest < ActionDispatch::IntegrationTest
     assert @budget.reload.rejected?
   end
 
+  test "approving notifies the admins by email" do
+    assert_enqueued_email_with BudgetMailer, :decision_notice, args: [ @budget ] do
+      post approve_api_v1_budget_path(@budget), headers: @headers
+    end
+  end
+
+  test "a failed decision sends no email" do
+    @budget.approve
+
+    assert_no_enqueued_emails do
+      post reject_api_v1_budget_path(@budget), headers: @headers
+    end
+  end
+
   test "cannot approve twice" do
     @budget.approve
     post approve_api_v1_budget_path(@budget), headers: @headers

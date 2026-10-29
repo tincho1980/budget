@@ -1,0 +1,14 @@
+Hola, <%= @client.business_name %>
+
+Te enviamos el presupuesto v<%= @budget.version %> del proyecto <%= @budget.project.name %> para que lo revises.
+<% @modules.each do |module_name, items| %>
+
+<%= module_name %>
+<% items.each do |item| %>
+- <%= item.description %>: <%= number_with_precision(item.estimated_hours, precision: 2, strip_insignificant_zeros: true) %> h
+<% end %>
+<% end %>
+
+Total: <%= number_to_currency(@budget.total) %>
+
+Podés aprobarlo o rechazarlo desde el portal de clientes.

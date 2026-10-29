@@ -1,0 +1,21 @@
+<h1 style="font-size: 20px; margin: 0 0 16px;">Hola, <%= @client.business_name %></h1>
+
+<p>Te enviamos el presupuesto <strong>v<%= @budget.version %></strong> del proyecto <strong><%= @budget.project.name %></strong> para que lo revises.</p>
+
+<table style="border-collapse: collapse; margin: 16px 0;">
+  <% @modules.each do |module_name, items| %>
+    <tr>
+      <td colspan="2" style="padding: 8px 0 4px; font-weight: bold;"><%= module_name %></td>
+    </tr>
+    <% items.each do |item| %>
+      <tr>
+        <td style="padding: 2px 24px 2px 0;"><%= item.description %></td>
+        <td style="padding: 2px 0; text-align: right;"><%= number_with_precision(item.estimated_hours, precision: 2, strip_insignificant_zeros: true) %> h</td>
+      </tr>
+    <% end %>
+  <% end %>
+</table>
+
+<p style="font-size: 18px;">Total: <strong><%= number_to_currency(@budget.total) %></strong></p>
+
+<p>Podés aprobarlo o rechazarlo desde el portal de clientes.</p>
