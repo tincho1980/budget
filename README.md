@@ -22,8 +22,8 @@ Requisitos: Ruby 3.4, PostgreSQL 14+ y `libpq-dev`.
 
 ```bash
 bundle install
-bin/rails db:prepare     # crea las bases, carga el esquema y los seeds
-bin/dev                  # servidor + Tailwind en modo watch
+bin/rails db:prepare     # crea las bases (incluida la de la cola de jobs), carga el esquema y los seeds
+bin/dev                  # servidor + Tailwind en modo watch + worker de jobs
 ```
 
 La app queda en http://localhost:3000. En desarrollo la conexión a Postgres es por socket con el usuario del sistema
@@ -104,6 +104,29 @@ fuera de Git).
 
 El tipo se valida con el que detecta Active Storage a partir del contenido del archivo (`AttachmentValidation`), no con
 el que declara quien lo sube.
+
+## Jobs de cobranza
+
+Corren con Solid Queue. En desarrollo la cola vive en `storage/development_queue.sqlite3` y `bin/dev` levanta el
+worker (`bin/jobs`); la programación está en `config/recurring.yml`.
+
+| Job | Cuándo | Qué hace |
+|---|---|---|
+| `GenerateMonthlyChargesJob` | Todos los días, 6:00 | Crea la cuota del mes de cada contrato activo y vigente. Corre a diario y no duplica (regla 11), así que un día sin servidor no se pierde |
+| `MarkOverdueChargesJob` | Todos los días, 7:00 | Pasa a vencidas las cuotas pendientes pasadas de fecha y manda el aviso de mora una sola vez |
+| `SendDueRemindersJob` | Todos los días, 9:00 | Manda el recordatorio de las cuotas que vencen en 3 días |
+
+Para correrlos a mano, por ejemplo en una demo:
+
+```bash
+bin/rails cobranza:todo              # las tres tareas en orden
+bin/rails cobranza:generar_cuotas
+bin/rails cobranza:marcar_vencidas
+bin/rails cobranza:recordatorios
+```
+
+Los mails también se envían por la cola (`deliver_later`): si se levanta solo `bin/rails server` sin `bin/jobs`,
+quedan encolados hasta que arranque el worker.
 
 ## Mails
 
@@ -226,7 +249,7 @@ Siempre con el mismo formato:
 ## Calidad y seguridad
 
 ```bash
-bin/rails test        # 85 tests: reglas de negocio, API, mails, adjuntos y acceso al back-office
+bin/rails test        # 94 tests: reglas de negocio, API, mails, adjuntos, jobs y acceso al back-office
 bin/rubocop           # sin infracciones
 bin/brakeman          # 0 advertencias
 bin/bundler-audit     # sin vulnerabilidades conocidas
@@ -237,7 +260,5 @@ y el control de acceso del back-office (`test/controllers/admin`).
 
 ## Pendiente
 
-- Active Job + Solid Queue: generación mensual de cuotas, marcado diario de vencidas y recordatorios automáticos
-  (hoy se hacen desde el back-office).
 - Vencimiento de sesiones del back-office por inactividad.
 - Deploy.

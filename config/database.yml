@@ -1,5 +1,5 @@
 # Postgresql for app data
-# SQLite for Solid Cache, Queue and Cable (production only)
+# SQLite for Solid Cache, Queue and Cable (the queue also in development)
 
 default: &default
   adapter: postgresql
@@ -11,9 +11,16 @@ sqlite_default: &sqlite_default
   max_connections: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
 
+# Development also runs Solid Queue, so jobs and recurring tasks behave as in
+# production. The queue lives in its own SQLite file, like in production.
 development:
-  <<: *default
-  database: adavra_sales_development
+  primary:
+    <<: *default
+    database: adavra_sales_development
+  queue:
+    <<: *sqlite_default
+    database: storage/development_queue.sqlite3
+    migrations_paths: db/queue_migrate
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
