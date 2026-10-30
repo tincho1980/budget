@@ -3,6 +3,11 @@
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
   ./bin/rails db:prepare
+
+  # Demo deploys load the seed data. db/seeds.rb skips it if there is data already.
+  if [ "${SEED_DEMO_DATA}" == "true" ]; then
+    ./bin/rails db:seed
+  fi
 fi
 
 exec "${@}"
