@@ -9,7 +9,23 @@
 #     priority: 2
 #     schedule: at 5am every day
 
+# Collection tasks, the same in development and production.
+collection: &collection
+  generate_monthly_charges:
+    class: GenerateMonthlyChargesJob
+    schedule: every day at 6am
+  mark_overdue_charges:
+    class: MarkOverdueChargesJob
+    schedule: every day at 7am
+  send_due_reminders:
+    class: SendDueRemindersJob
+    schedule: every day at 9am
+
+development:
+  <<: *collection
+
 production:
+  <<: *collection
   clear_solid_queue_finished_jobs:
     command: "SolidQueue::Job.clear_finished_in_batches(sleep_between_batches: 0.3)"
     schedule: every hour at minute 12
