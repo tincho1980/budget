@@ -215,7 +215,9 @@ ActiveRecord::Base.transaction do
   # A transfer reported from the client portal, waiting for an admin to review it.
   overdue_client = clients[:overdue]
   overdue_client.payments.create!(registered_by: overdue_client.users.first, paid_on: TODAY - 1,
-    amount: 120_000, payment_method: :transfer, status: :pending_review, notes: "Transferencia informada desde el portal")
+    amount: 120_000, payment_method: :transfer, status: :pending_review, notes: "Transferencia informada desde el portal",
+    receipt: { io: File.open(Rails.root.join("db/seeds_files/comprobante-transferencia.pdf")),
+               filename: "comprobante-transferencia.pdf" })
 
   # --- Summary ---------------------------------------------------------------
 

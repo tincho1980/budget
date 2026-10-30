@@ -28,6 +28,22 @@
   <dt>Notas</dt><dd><%= @budget.notes.presence || "—" %></dd>
 </dl>
 
+<% if @budget.approved? %>
+  <h2 class="section-title">PDF firmado</h2>
+  <% if @budget.signed_document.attached? %>
+    <p class="text-sm mb-3">
+      <%= link_to @budget.signed_document.filename.to_s, rails_blob_path(@budget.signed_document, disposition: "inline"), class: "link", target: "_blank" %>
+      <span class="text-gray-500">· <%= number_to_human_size(@budget.signed_document.byte_size) %></span>
+    </p>
+  <% else %>
+    <p class="text-sm text-gray-500 mb-3">Todavía no se adjuntó la copia firmada por el cliente.</p>
+  <% end %>
+  <%= form_with model: @budget, url: attach_signed_document_admin_budget_path(@budget), method: :patch, class: "flex flex-wrap items-center gap-2 mb-6" do |form| %>
+    <%= form.file_field :signed_document, accept: "application/pdf", class: "text-sm" %>
+    <%= form.submit (@budget.signed_document.attached? ? "Reemplazar PDF" : "Adjuntar PDF"), class: "btn" %>
+  <% end %>
+<% end %>
+
 <div class="flex items-center justify-between">
   <h2 class="section-title">Ítems</h2>
   <% if @budget.draft? %>

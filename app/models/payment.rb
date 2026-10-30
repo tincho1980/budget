@@ -1,4 +1,6 @@
 class Payment < ApplicationRecord
+  include AttachmentValidation
+
   belongs_to :client
   belongs_to :registered_by, class_name: "User", inverse_of: :registered_payments
   has_many :payment_applications, dependent: :destroy
@@ -7,8 +9,12 @@ class Payment < ApplicationRecord
   enum :payment_method, { transfer: 0, cash: 1, check: 2 }, validate: true
   enum :status, { pending_review: 0, confirmed: 1, rejected: 2 }, validate: true
 
+  # Proof of a transfer, uploaded by the client from the portal or by the team.
+  has_one_attached :receipt
+
   validates :paid_on, presence: true
   validates :amount, numericality: { greater_than: 0 }
+  validates_attachment :receipt, content_types: %w[ application/pdf image/jpeg image/png ], max_size: 5.megabytes
 
   def applied_amount
     payment_applications.sum(:applied_amount)

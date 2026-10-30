@@ -31,4 +31,22 @@ class Api::V1::PaymentsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "200000.00", json.dig("account", "debt")
     assert_equal 2, json.dig("account", "overdue_charges")
   end
+
+  test "a payment can be reported with its receipt" do
+    post api_v1_payments_path, headers: @headers,
+      params: { amount: "100000", paid_on: Date.current, payment_method: "transfer", receipt: fixture_file_upload("comprobante.pdf") }
+
+    assert_response :created
+    assert_equal "comprobante.pdf", json.dig("payment", "receipt", "filename")
+    assert_equal "application/pdf", json.dig("payment", "receipt", "content_type")
+    assert Payment.last.receipt.attached?
+  end
+
+  test "an invalid receipt is rejected with the reason" do
+    post api_v1_payments_path, headers: @headers,
+      params: { amount: "100000", paid_on: Date.current, payment_method: "transfer", receipt: fixture_file_upload("notas.txt") }
+
+    assert_response :unprocessable_content
+    assert_includes json.dig("error", "details"), "Comprobante debe ser PDF, JPG o PNG"
+  end
 end

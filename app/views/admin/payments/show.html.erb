@@ -22,6 +22,19 @@
   <dt>Notas</dt><dd><%= @payment.notes.presence || "—" %></dd>
 </dl>
 
+<h2 class="section-title">Comprobante</h2>
+<% if @payment.receipt.attached? %>
+  <p class="text-sm mb-2">
+    <%= link_to @payment.receipt.filename.to_s, rails_blob_path(@payment.receipt, disposition: "inline"), class: "link", target: "_blank" %>
+    <span class="text-gray-500">· <%= number_to_human_size(@payment.receipt.byte_size) %></span>
+  </p>
+  <% if @payment.receipt.image? %>
+    <%= image_tag @payment.receipt, class: "max-w-md border rounded" %>
+  <% end %>
+<% else %>
+  <p class="text-sm text-gray-500 mb-6">Sin comprobante adjunto.</p>
+<% end %>
+
 <h2 class="section-title">Imputación a cuotas</h2>
 <% if @applications.any? %>
   <table class="data-table">

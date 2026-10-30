@@ -9,7 +9,7 @@
 <% if @in_review.any? %>
   <p class="text-sm text-gray-500 mb-2">Informados por los clientes desde el portal. No imputan hasta que se confirman.</p>
   <table class="data-table mb-6">
-    <thead><tr><th>Fecha</th><th>Cliente</th><th>Informado por</th><th>Medio</th><th class="num">Monto</th><th></th></tr></thead>
+    <thead><tr><th>Fecha</th><th>Cliente</th><th>Informado por</th><th>Medio</th><th>Comprobante</th><th class="num">Monto</th><th></th></tr></thead>
     <tbody>
       <% @in_review.each do |payment| %>
         <tr>
@@ -17,6 +17,13 @@
           <td><%= payment.client.business_name %></td>
           <td><%= payment.registered_by.name %></td>
           <td><%= status_label(payment.payment_method) %></td>
+          <td>
+            <% if payment.receipt.attached? %>
+              <%= link_to "Ver", rails_blob_path(payment.receipt, disposition: "inline"), class: "link", target: "_blank" %>
+            <% else %>
+              <span class="text-gray-400">—</span>
+            <% end %>
+          </td>
           <td class="num"><%= number_to_currency(payment.amount) %></td>
           <td class="whitespace-nowrap">
             <%= button_to "Confirmar", confirm_admin_payment_path(payment), method: :patch, class: "btn-primary", form: { class: "inline" } %>

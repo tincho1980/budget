@@ -2,7 +2,7 @@ class Admin::PaymentsController < Admin::BaseController
   before_action :set_payment, only: %i[ show confirm reject ]
 
   def index
-    @in_review = Payment.pending_review.includes(:client, :registered_by).order(:paid_on)
+    @in_review = Payment.pending_review.includes(:client, :registered_by).with_attached_receipt.order(:paid_on)
     @payments = Payment.where.not(status: :pending_review).includes(:client, :registered_by)
       .order(paid_on: :desc, id: :desc).limit(100)
   end
@@ -52,6 +52,6 @@ class Admin::PaymentsController < Admin::BaseController
   end
 
   def payment_params
-    params.expect(payment: [ :client_id, :paid_on, :amount, :payment_method, :notes ])
+    params.expect(payment: [ :client_id, :paid_on, :amount, :payment_method, :notes, :receipt ])
   end
 end

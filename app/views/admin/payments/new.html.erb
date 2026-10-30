@@ -23,6 +23,11 @@
     <%= form.select :payment_method, enum_options(Payment, :payment_methods), {}, class: "form-input" %>
   </div>
   <div class="form-field">
+    <%= form.label :receipt %>
+    <%= form.file_field :receipt, accept: "application/pdf,image/jpeg,image/png", class: "form-input" %>
+    <p class="text-xs text-gray-500 mt-1">Opcional. PDF, JPG o PNG de hasta 5 MB.</p>
+  </div>
+  <div class="form-field">
     <%= form.label :notes %>
     <%= form.text_area :notes, rows: 2, class: "form-input" %>
   </div>

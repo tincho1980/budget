@@ -63,4 +63,15 @@ class BudgetTest < ActiveSupport::TestCase
 
     assert_not @budget.valid?
   end
+
+  test "the signed document must be a PDF" do
+    budget = budgets(:closed_approved)
+
+    budget.signed_document = { io: File.open(file_fixture("presupuesto_firmado.pdf")), filename: "firmado.pdf" }
+    assert budget.valid?
+
+    budget.signed_document = { io: File.open(file_fixture("comprobante.png")), filename: "firmado.png" }
+    assert_not budget.valid?
+    assert_includes budget.errors.full_messages, "PDF firmado debe ser PDF"
+  end
 end

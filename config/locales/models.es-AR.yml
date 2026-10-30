@@ -39,6 +39,7 @@ es-AR:
         buffer_percentage: Buffer (%)
         total: Total
         notes: Notas
+        signed_document: PDF firmado
       budget_item:
         budget: Presupuesto
         rate: Tarifa
@@ -94,6 +95,7 @@ es-AR:
         payment_method: Medio de pago
         status: Estado
         notes: Notas
+        receipt: Comprobante
       payment_application:
         payment: Pago
         maintenance_charge: Cuota

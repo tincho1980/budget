@@ -1,14 +1,20 @@
 class Budget < ApplicationRecord
+  include AttachmentValidation
+
   belongs_to :project
   has_many :budget_items, -> { order(:position, :id) }, dependent: :destroy, inverse_of: :budget
 
   enum :status, { draft: 0, sent: 1, approved: 2, rejected: 3 }, validate: true
+
+  # The copy signed by the client, attached once the budget is approved.
+  has_one_attached :signed_document
 
   validates :version, numericality: { only_integer: true, greater_than: 0 },
     uniqueness: { scope: :project_id }
   validates :buffer_percentage, numericality: { greater_than_or_equal_to: 0 }
   validates :total, numericality: { greater_than_or_equal_to: 0 }
   validate :single_approved_budget_per_project, if: :approved?
+  validates_attachment :signed_document, content_types: %w[ application/pdf ], max_size: 10.megabytes
 
   after_update :calculate_total!, if: :saved_change_to_buffer_percentage?
 

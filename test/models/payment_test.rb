@@ -48,4 +48,37 @@ class PaymentTest < ActiveSupport::TestCase
     assert payment.confirmed?
     assert_equal BigDecimal("100000"), @client.debt
   end
+
+  test "accepts a PDF or image receipt" do
+    payment = new_payment(100_000, status: :pending_review)
+
+    payment.receipt = { io: File.open(file_fixture("comprobante.pdf")), filename: "comprobante.pdf" }
+    assert payment.valid?
+    payment.receipt = { io: File.open(file_fixture("comprobante.png")), filename: "comprobante.png" }
+    assert payment.valid?
+  end
+
+  test "rejects a receipt that is not a PDF or an image" do
+    payment = new_payment(100_000, status: :pending_review)
+    payment.receipt = { io: File.open(file_fixture("notas.txt")), filename: "notas.txt" }
+
+    assert_not payment.valid?
+    assert_includes payment.errors.full_messages, "Comprobante debe ser PDF, JPG o PNG"
+  end
+
+  test "the type is detected from the file's signature, not from what the client declares" do
+    payment = new_payment(100_000, status: :pending_review)
+    payment.receipt = { io: File.open(file_fixture("comprobante.png")), filename: "foto.txt", content_type: "text/plain" }
+
+    assert payment.valid?
+    assert_equal "image/png", payment.receipt.content_type
+  end
+
+  test "rejects a receipt larger than 5 MB" do
+    payment = new_payment(100_000, status: :pending_review)
+    payment.receipt = { io: StringIO.new("%PDF-1.4\n" + ("0" * 6.megabytes)), filename: "grande.pdf" }
+
+    assert_not payment.valid?
+    assert_includes payment.errors.full_messages.join, "no puede pesar más de 5 MB"
+  end
 end
