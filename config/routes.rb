@@ -31,7 +31,9 @@ Rails.application.routes.draw do
     resources :maintenance_contracts do
       member { post :generate_charge }
     end
-    resources :maintenance_charges, only: :index
+    resources :maintenance_charges, only: :index do
+      member { post :send_reminder }
+    end
     resources :payments, except: %i[ edit update destroy ] do
       member do
         patch :confirm
