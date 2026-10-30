@@ -17,6 +17,8 @@ class MaintenanceContract < ApplicationRecord
     return unless active?
 
     month = date.beginning_of_month
+    return if starts_on > month.end_of_month || (ends_on && ends_on < month)
+
     period = month.strftime("%Y-%m")
     maintenance_charges.create_with(amount: monthly_amount, due_on: month.change(day: due_day))
       .find_or_create_by!(period: period)
