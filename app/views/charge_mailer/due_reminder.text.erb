@@ -1,0 +1,5 @@
+Hola, <%= @client.business_name %>
+
+Te recordamos que la cuota de mantenimiento <%= @charge.period %> vence el <%= l(@charge.due_on) %>.
+
+<%= render "summary" %>
