@@ -40,6 +40,11 @@ Rails.application.configure do
   # open any email sent with an internal app
   config.action_mailer.delivery_method = :letter_opener_web
 
+  # Run jobs with Solid Queue (bin/jobs, started by bin/dev) so recurring tasks
+  # in config/recurring.yml are scheduled like in production.
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = { database: { writing: :queue } }
+
   # Set localhost to be used by links generated in mailer templates.
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
