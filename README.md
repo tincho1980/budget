@@ -92,6 +92,20 @@ Entrar en http://localhost:3000 con `admin@adavra.com`. Solo acceden usuarios co
 | Cuotas con filtro por estado | `/admin/maintenance_charges` |
 | Pagos: registro con imputación automática y bandeja de pagos en revisión | `/admin/payments` |
 
+## Mails
+
+En desarrollo no salen a ningún lado: se ven en http://localhost:3000/letter_opener, y las previews con datos de los
+seeds en http://localhost:3000/rails/mailers.
+
+| Mail | Cuándo | A quién |
+|---|---|---|
+| Presupuesto listo para aprobar | Al enviar un presupuesto desde el back-office | Usuarios del portal del cliente |
+| Aviso de decisión | Cuando el cliente aprueba o rechaza desde la API | Admins |
+| Recordatorio de vencimiento | Botón "Enviar recordatorio" en una cuota que todavía no venció | Email de contacto y usuarios del portal |
+| Aviso de mora | Botón "Avisar mora" en una cuota vencida con saldo | Email de contacto y usuarios del portal |
+
+Se envían en segundo plano (`deliver_later`) y no muestran tarifas ni tareas internas.
+
 ## API v1
 
 Base: `http://localhost:3000/api/v1`. Todas las respuestas son JSON. Salvo el login, cada request lleva el header
@@ -187,7 +201,7 @@ Siempre con el mismo formato:
 ## Calidad y seguridad
 
 ```bash
-bin/rails test        # 59 tests: reglas de negocio, API y acceso al back-office
+bin/rails test        # 74 tests: reglas de negocio, API, mails y acceso al back-office
 bin/rubocop           # sin infracciones
 bin/brakeman          # 0 advertencias
 bin/bundler-audit     # sin vulnerabilidades conocidas
@@ -199,7 +213,7 @@ y el control de acceso del back-office (`test/controllers/admin`).
 ## Pendiente
 
 - Active Storage: comprobante adjunto al pago y PDF firmado del presupuesto.
-- Action Mailer: presupuesto enviado, aviso de decisión, recordatorio de vencimiento y aviso de mora.
-- Active Job + Solid Queue: generación mensual de cuotas y marcado diario de vencidas (hoy se hacen desde el back-office).
+- Active Job + Solid Queue: generación mensual de cuotas, marcado diario de vencidas y recordatorios automáticos
+  (hoy se hacen desde el back-office).
 - Vencimiento de sesiones del back-office por inactividad.
 - Deploy.
