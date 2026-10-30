@@ -1,5 +1,5 @@
 # Postgresql for app data
-# SQLite for Solid Cache, Queue and Cable (the queue also in development)
+# SQLite for the Solid Queue database in development
 
 default: &default
   adapter: postgresql
@@ -12,7 +12,7 @@ sqlite_default: &sqlite_default
   timeout: 5000
 
 # Development also runs Solid Queue, so jobs and recurring tasks behave as in
-# production. The queue lives in its own SQLite file, like in production.
+# production. The queue lives in its own SQLite file.
 development:
   primary:
     <<: *default
@@ -30,19 +30,14 @@ test:
   database: adavra_sales_test
 
 
+# Production runs on a host whose disk is wiped on every restart, so nothing
+# lives in SQLite there: the app data and the job queue are two PostgreSQL
+# databases (for example, two databases of the same Neon project).
 production:
   primary:
     <<: *default
     url: <%= ENV["DATABASE_URL"] %>
-  cache:
-    <<: *sqlite_default
-    database: storage/production_cache.sqlite3
-    migrations_paths: db/cache_migrate
   queue:
-    <<: *sqlite_default
-    database: storage/production_queue.sqlite3
+    <<: *default
+    url: <%= ENV["QUEUE_DATABASE_URL"] %>
     migrations_paths: db/queue_migrate
-  cable:
-    <<: *sqlite_default
-    database: storage/production_cable.sqlite3
-    migrations_paths: db/cable_migrate

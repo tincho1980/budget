@@ -1,0 +1,40 @@
+# Render Blueprint: Render reads this file to create and configure the service.
+# Values marked "sync: false" are secrets: Render asks for them when the
+# Blueprint is created and they never live in the repository.
+services:
+  - type: web
+    name: adavra-sales
+    runtime: docker
+    plan: free
+    branch: develop
+    # Puma directly, without Thruster: Render terminates HTTPS and tells the app
+    # which port to listen on (PORT), and Thruster would listen on 80 instead.
+    dockerCommand: ./bin/rails server
+    healthCheckPath: /up
+    envVars:
+      - key: RAILS_MASTER_KEY
+        sync: false
+      # Neon: two databases of the same project, direct connection (no pooler).
+      - key: DATABASE_URL
+        sync: false
+      - key: QUEUE_DATABASE_URL
+        sync: false
+      # S3-compatible bucket for Active Storage (Cloudflare R2, Backblaze B2, S3).
+      - key: S3_ENDPOINT
+        sync: false
+      - key: S3_BUCKET
+        sync: false
+      - key: S3_ACCESS_KEY_ID
+        sync: false
+      - key: S3_SECRET_ACCESS_KEY
+        sync: false
+      - key: S3_REGION
+        value: auto
+      # Jobs run inside Puma: the free plan has a single process.
+      - key: SOLID_QUEUE_IN_PUMA
+        value: "true"
+      # Demo data on the first deploy, with a password of your own.
+      - key: SEED_DEMO_DATA
+        value: "true"
+      - key: SEED_PASSWORD
+        sync: false

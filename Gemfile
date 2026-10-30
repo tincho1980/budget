@@ -39,6 +39,12 @@ gem "kamal", require: false
 # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem "thruster", require: false
 
+# Demo data in db/seeds.rb, which also runs on the deployed app (SEED_DEMO_DATA)
+gem "faker"
+
+# Active Storage in production stores files in an S3-compatible bucket (Cloudflare R2, Backblaze B2, S3)
+gem "aws-sdk-s3", require: false
+
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 gem "image_processing", "~> 2.2"
 # image_processing 2.x no longer pulls in its processor. Active Storage loads vips
@@ -64,9 +70,6 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
-
-  # Create mock data for seeds
-  gem "faker"
 end
 
 group :development do

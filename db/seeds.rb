@@ -13,7 +13,9 @@ Faker::Config.locale = "es-AR"
 Faker::Config.random = Random.new(42)
 
 TODAY = Date.current
-PASSWORD = "password".freeze
+# On a public deploy set SEED_PASSWORD, or anyone could log in as the admin.
+PASSWORD = ENV.fetch("SEED_PASSWORD", "password").freeze
+PASSWORD_HINT = ENV.key?("SEED_PASSWORD") ? "(la de SEED_PASSWORD)" : PASSWORD
 
 def rate_for(level, date)
   Rate.where(level: level).where(valid_from: ..date).order(valid_from: :desc).first!
@@ -227,6 +229,6 @@ ActiveRecord::Base.transaction do
     puts "  #{model.name.ljust(20)} #{model.count}"
   end
   puts "Cuotas vencidas: #{MaintenanceCharge.overdue.count} · parciales: #{MaintenanceCharge.partial.count}"
-  puts "Back-office: admin@adavra.com / #{PASSWORD}"
-  puts "API (presupuesto para aprobar): portal@clubsocial.com.ar / #{PASSWORD}"
+  puts "Back-office: admin@adavra.com / #{PASSWORD_HINT}"
+  puts "API (presupuesto para aprobar): portal@clubsocial.com.ar / #{PASSWORD_HINT}"
 end
