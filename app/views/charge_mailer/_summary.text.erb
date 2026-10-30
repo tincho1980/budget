@@ -1,0 +1,13 @@
+Período: <%= @charge.period %>
+Vencimiento: <%= l(@charge.due_on) %>
+Monto de la cuota: <%= number_to_currency(@charge.amount) %>
+<% if @charge.paid_amount.positive? %>
+Ya pagado: <%= number_to_currency(@charge.paid_amount) %>
+<% end %>
+Saldo de esta cuota: <%= number_to_currency(@charge.balance) %>
+<% if @debt > @charge.balance %>
+
+Tu deuda total, sumando otras cuotas impagas, es de <%= number_to_currency(@debt) %>.
+<% end %>
+
+Cuando hagas el pago, informalo desde el portal de clientes adjuntando el comprobante. Si ya lo hiciste, ignorá este mensaje.

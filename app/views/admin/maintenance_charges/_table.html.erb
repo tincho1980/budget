@@ -11,6 +11,7 @@
           <th class="num">Monto</th>
           <th class="num">Pagado</th>
           <th class="num">Saldo</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -26,6 +27,12 @@
             <td class="num"><%= number_to_currency(charge.amount) %></td>
             <td class="num"><%= number_to_currency(charge.paid_amount) %></td>
             <td class="num"><%= number_to_currency(charge.balance) %></td>
+            <td class="whitespace-nowrap">
+              <% unless charge.paid? %>
+                <%= button_to (charge.due_on < Date.current ? "Avisar mora" : "Enviar recordatorio"),
+                      send_reminder_admin_maintenance_charge_path(charge), class: "link", form: { class: "inline" } %>
+              <% end %>
+            </td>
           </tr>
         <% end %>
       </tbody>

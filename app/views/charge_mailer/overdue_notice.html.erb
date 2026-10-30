@@ -1,0 +1,5 @@
+<h1 style="font-size: 20px; margin: 0 0 16px;">Hola, <%= @client.business_name %></h1>
+
+<p>La cuota de mantenimiento <strong><%= @charge.period %></strong> venció el <strong><%= l(@charge.due_on) %></strong> y todavía tiene saldo pendiente (<%= @charge.days_overdue %> días de atraso).</p>
+
+<%= render "summary" %>

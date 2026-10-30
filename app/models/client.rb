@@ -10,6 +10,11 @@ class Client < ApplicationRecord
   validates :tax_id, uniqueness: true, allow_blank: true
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, allow_blank: true
 
+  # Collection notices go to the contact email and to every portal user.
+  def notification_emails
+    ([ email ] + users.pluck(:email_address)).compact_blank.uniq
+  end
+
   # Rule 16: pending, partial and overdue balances.
   def debt
     maintenance_charges.unpaid.includes(:payment_applications).to_a.sum(BigDecimal("0"), &:balance)

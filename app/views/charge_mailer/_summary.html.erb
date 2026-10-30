@@ -1,0 +1,15 @@
+<table style="border-collapse: collapse; margin: 16px 0;">
+  <tr><td style="padding: 2px 24px 2px 0; color: #555;">Período</td><td style="padding: 2px 0;"><strong><%= @charge.period %></strong></td></tr>
+  <tr><td style="padding: 2px 24px 2px 0; color: #555;">Vencimiento</td><td style="padding: 2px 0;"><%= l(@charge.due_on) %></td></tr>
+  <tr><td style="padding: 2px 24px 2px 0; color: #555;">Monto de la cuota</td><td style="padding: 2px 0;"><%= number_to_currency(@charge.amount) %></td></tr>
+  <% if @charge.paid_amount.positive? %>
+    <tr><td style="padding: 2px 24px 2px 0; color: #555;">Ya pagado</td><td style="padding: 2px 0;"><%= number_to_currency(@charge.paid_amount) %></td></tr>
+  <% end %>
+  <tr><td style="padding: 2px 24px 2px 0; color: #555;">Saldo de esta cuota</td><td style="padding: 2px 0;"><strong><%= number_to_currency(@charge.balance) %></strong></td></tr>
+</table>
+
+<% if @debt > @charge.balance %>
+  <p>Tu deuda total, sumando otras cuotas impagas, es de <strong><%= number_to_currency(@debt) %></strong>.</p>
+<% end %>
+
+<p>Cuando hagas el pago, informalo desde el portal de clientes adjuntando el comprobante. Si ya lo hiciste, ignorá este mensaje.</p>

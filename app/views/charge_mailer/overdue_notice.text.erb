@@ -1,0 +1,5 @@
+Hola, <%= @client.business_name %>
+
+La cuota de mantenimiento <%= @charge.period %> venció el <%= l(@charge.due_on) %> y todavía tiene saldo pendiente (<%= @charge.days_overdue %> días de atraso).
+
+<%= render "summary" %>
