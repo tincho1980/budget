@@ -22,7 +22,9 @@ Rails.application.configure do
   # config.asset_host = "http://assets.example.com"
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :local
+  # Uploads go to an S3-compatible bucket (see config/storage.yml). ACTIVE_STORAGE_SERVICE=local
+  # keeps them on disk, for running production mode on a machine with a persistent disk.
+  config.active_storage.service = ENV.fetch("ACTIVE_STORAGE_SERVICE", "s3_compatible").to_sym
 
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   # config.assume_ssl = true
