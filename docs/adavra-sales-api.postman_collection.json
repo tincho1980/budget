@@ -453,6 +453,58 @@
           }
         },
         {
+          "name": "Informar pago con comprobante",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "amount",
+                  "value": "120000.00",
+                  "type": "text"
+                },
+                {
+                  "key": "paid_on",
+                  "value": "2026-10-29",
+                  "type": "text"
+                },
+                {
+                  "key": "payment_method",
+                  "value": "transfer",
+                  "type": "text"
+                },
+                {
+                  "key": "notes",
+                  "value": "Transferencia con comprobante",
+                  "type": "text"
+                },
+                {
+                  "key": "receipt",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/payments",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "payments"
+              ]
+            },
+            "description": "multipart/form-data. En 'receipt' elegí un PDF, JPG o PNG de hasta 5 MB (hay uno de ejemplo en test/fixtures/files/comprobante.pdf)."
+          }
+        },
+        {
           "name": "Mis pagos",
           "request": {
             "method": "GET",

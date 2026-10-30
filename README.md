@@ -92,6 +92,19 @@ Entrar en http://localhost:3000 con `admin@adavra.com`. Solo acceden usuarios co
 | Cuotas con filtro por estado | `/admin/maintenance_charges` |
 | Pagos: registro con imputación automática y bandeja de pagos en revisión | `/admin/payments` |
 
+## Archivos adjuntos
+
+Con Active Storage. En desarrollo se guardan en `storage/` y en los tests en `tmp/storage/` (las dos carpetas están
+fuera de Git).
+
+| Adjunto | Modelo | Lo sube | Formatos |
+|---|---|---|---|
+| Comprobante de pago | `Payment#receipt` | El cliente desde la API o el equipo desde el back-office | PDF, JPG o PNG, hasta 5 MB |
+| Presupuesto firmado | `Budget#signed_document` | El equipo, una vez aprobado el presupuesto | PDF, hasta 10 MB |
+
+El tipo se valida con el que detecta Active Storage a partir del contenido del archivo (`AttachmentValidation`), no con
+el que declara quien lo sube.
+
 ## Mails
 
 En desarrollo no salen a ningún lado: se ven en http://localhost:3000/letter_opener, y las previews con datos de los
@@ -126,7 +139,7 @@ el login guarda el token y "Mis proyectos" guarda los ids que usan las demás re
 | GET | `/account` | Deuda total, cuotas impagas y últimos pagos |
 | GET | `/charges?status=overdue` | Cuotas, filtrables por `pending`, `partial`, `paid`, `overdue` |
 | GET | `/payments` | Pagos del cliente |
-| POST | `/payments` | Informa un pago (queda `pending_review`) |
+| POST | `/payments` | Informa un pago (queda `pending_review`), opcionalmente con su comprobante |
 
 ### Ejemplos
 
@@ -169,6 +182,18 @@ curl -X POST http://localhost:3000/api/v1/payments \
   -d '{"amount": "120000.00", "paid_on": "2026-09-29", "payment_method": "transfer"}'
 ```
 
+Para adjuntar el comprobante, el pago se envía como `multipart/form-data` con el archivo en `receipt`:
+
+```bash
+curl -X POST http://localhost:3000/api/v1/payments \
+  -H "Authorization: Bearer <token>" \
+  -F amount=120000.00 -F paid_on=2026-10-29 -F payment_method=transfer \
+  -F receipt=@comprobante.pdf
+```
+
+La respuesta incluye `receipt` con el nombre, el tipo, el tamaño y la URL de descarga. El presupuesto incluye
+`signed_document_url` cuando el equipo adjuntó la copia firmada.
+
 ### Errores
 
 Siempre con el mismo formato:
@@ -201,7 +226,7 @@ Siempre con el mismo formato:
 ## Calidad y seguridad
 
 ```bash
-bin/rails test        # 74 tests: reglas de negocio, API, mails y acceso al back-office
+bin/rails test        # 85 tests: reglas de negocio, API, mails, adjuntos y acceso al back-office
 bin/rubocop           # sin infracciones
 bin/brakeman          # 0 advertencias
 bin/bundler-audit     # sin vulnerabilidades conocidas
@@ -212,7 +237,6 @@ y el control de acceso del back-office (`test/controllers/admin`).
 
 ## Pendiente
 
-- Active Storage: comprobante adjunto al pago y PDF firmado del presupuesto.
 - Active Job + Solid Queue: generación mensual de cuotas, marcado diario de vencidas y recordatorios automáticos
   (hoy se hacen desde el back-office).
 - Vencimiento de sesiones del back-office por inactividad.
