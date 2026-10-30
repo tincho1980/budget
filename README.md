@@ -258,7 +258,36 @@ bin/bundler-audit     # sin vulnerabilidades conocidas
 Los tests cubren las reglas 1 a 17 (`test/models`), la autenticación y el scoping de la API (`test/controllers/api/v1`)
 y el control de acceso del back-office (`test/controllers/admin`).
 
+## Deploy en Render
+
+El servicio está descrito en [`render.yaml`](render.yaml) (Blueprint): Docker, plan gratuito, rama `develop`. Como el
+disco de Render se borra en cada reinicio, en producción no se usa SQLite ni el disco:
+
+| Qué | Dónde |
+|---|---|
+| Datos de la app | PostgreSQL (`DATABASE_URL`), por ejemplo en Neon |
+| Cola de jobs (Solid Queue) | Otra base PostgreSQL (`QUEUE_DATABASE_URL`) |
+| Adjuntos (Active Storage) | Un bucket compatible con S3: Cloudflare R2, Backblaze B2 o S3 |
+| Caché y Action Cable | En memoria (una sola instancia) |
+| Jobs | Dentro de Puma (`SOLID_QUEUE_IN_PUMA=true`) |
+
+Al arrancar, el contenedor corre `bin/rails db:prepare`, que crea las tablas en las dos bases, y con
+`SEED_DEMO_DATA=true` carga los datos de demo si la base está vacía.
+
+### Variables de entorno
+
+| Variable | Valor |
+|---|---|
+| `RAILS_MASTER_KEY` | Contenido de `config/master.key` |
+| `DATABASE_URL` / `QUEUE_DATABASE_URL` | Conexión directa (sin pooler) a cada base |
+| `S3_ENDPOINT`, `S3_BUCKET`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY` | Datos del bucket (`S3_REGION` es `auto` para R2) |
+| `SEED_PASSWORD` | Contraseña de los usuarios de demo. Sin ella sería `password`, pública en este README |
+| `SMTP_ADDRESS`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD` | Opcionales. Sin SMTP, los mails se escriben en `tmp/mails` y no se envían |
+
+En el plan gratuito la app se duerme tras un rato sin visitas: tarda unos segundos en despertar y, mientras duerme,
+las tareas programadas no corren.
+
 ## Pendiente
 
 - Vencimiento de sesiones del back-office por inactividad.
-- Deploy.
+- SMTP real para producción.
