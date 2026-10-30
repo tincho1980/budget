@@ -5,6 +5,7 @@ billable_items = @budget.budget_items.select(&:billable)
 json.budget do
   json.extract! @budget, :id, :version, :status, :sent_at, :approved_at, :notes
   json.total format("%.2f", @budget.total)
+  json.signed_document_url(@budget.signed_document.attached? ? rails_blob_url(@budget.signed_document) : nil)
   json.project do
     json.extract! @budget.project, :id, :name
   end

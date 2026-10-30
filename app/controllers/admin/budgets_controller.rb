@@ -47,6 +47,22 @@ class Admin::BudgetsController < Admin::BaseController
     end
   end
 
+  # Attaching the signed copy does not change the budget itself, so it is
+  # allowed after approval, unlike editing it.
+  def attach_signed_document
+    file = params.fetch(:budget, {}).permit(:signed_document)[:signed_document]
+
+    if !@budget.approved?
+      redirect_to admin_budget_path(@budget), alert: "Sólo se adjunta el PDF firmado de un presupuesto aprobado."
+    elsif file.blank?
+      redirect_to admin_budget_path(@budget), alert: "Elegí el PDF firmado para adjuntarlo."
+    elsif @budget.update(signed_document: file)
+      redirect_to admin_budget_path(@budget), notice: "PDF firmado adjuntado."
+    else
+      redirect_to admin_budget_path(@budget), alert: @budget.errors.full_messages.to_sentence
+    end
+  end
+
   # Rule 4: an issued budget is never edited; changes go into a copy as a new draft.
   def new_version
     copy = @budget.project.budgets.create!(

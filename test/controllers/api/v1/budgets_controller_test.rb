@@ -52,4 +52,13 @@ class Api::V1::BudgetsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_content
   end
+
+  test "the client can download the signed PDF" do
+    budget = budgets(:closed_approved)
+    budget.signed_document.attach(io: File.open(file_fixture("presupuesto_firmado.pdf")), filename: "firmado.pdf")
+
+    get api_v1_budget_path(budget), headers: @headers
+
+    assert_match %r{/rails/active_storage/blobs/}, json.dig("budget", "signed_document_url")
+  end
 end

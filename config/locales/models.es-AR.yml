@@ -39,6 +39,7 @@ es-AR:
         buffer_percentage: Buffer (%)
         total: Total
         notes: Notas
+        signed_document: PDF firmado
       budget_item:
         budget: Presupuesto
         rate: Tarifa

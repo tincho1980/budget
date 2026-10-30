@@ -22,6 +22,7 @@ Rails.application.routes.draw do
         member do
           post :send_to_client
           post :new_version
+          patch :attach_signed_document
         end
         resources :budget_items, shallow: true, except: %i[ index show ]
       end
